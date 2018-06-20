@@ -1,0 +1,17 @@
+##Staging环境
+spring:
+    profiles: staging
+
+
+#服务端口
+server:
+  port: 9200
+
+
+#数据库IP
+db:
+  ip: 47.94.142.243 #pro 47.94.142.243 ,stage 47.94.241.88
+  name: itender_land
+  username: root  #pro root , stage  dev
+  password: Ycp7WyjzNA
+

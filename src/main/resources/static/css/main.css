@@ -1,0 +1,90 @@
+.errorClass{
+    color: #c12e2a;
+}
+.margin-top{
+    margin-top: 20px;
+}
+.margin-bottom{
+    margin-bottom: 20px;
+}
+.no-margin-bottom{
+    margin-bottom: 0px!important;
+}
+.no-border-radius{
+    border-radius: 0px!important;
+}
+.sub-nav{
+    margin-top: -1px;
+}
+/*重写UEditor 样式*/
+.edui-default .edui-editor{
+    border: none!important;
+    border-radius: 0px!important;
+}
+/*顶部子菜单bar*/
+.top-menu-bar{
+    border: 1px solid #e7e7e7;
+    background-color: #f8f8f8;
+    border-left: none;
+    border-right: none;
+    min-height: 50px;
+    line-height: 50px;
+    /*width: 100%;*/
+    /*z-index: 100000;*/
+}
+
+/*左侧固定，右侧自适应*/
+.flex-content{
+    display: flex;
+    flex-flow: row;
+    min-height: 500px;
+    position: relative;
+}
+.flex-left{
+    width: 300px;
+    padding: 10px;
+    overflow: auto;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-sizing:border-box;
+}
+.flex-right{
+    border-left:1px solid #e7e7e7 ;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    margin-left: 300px;
+}
+.flex-right-container{
+    flex: 1;
+}
+.word-style {
+    border: none;
+    border-bottom: 1px #000000 solid;
+    box-shadow: none;
+    outline: none;
+    width: 150px;
+    font-size: 16pt;
+    word-break: break-all;
+}
+
+/*调整TAB样式*/
+.custom-layui-tab {
+    margin: 0!important;
+}
+.custom-layui-tab-card{
+    border-width:0!important;
+    border-style:none!important;
+    border-radius:0!important;
+}
+
+.header .layui-nav{position: absolute; right: 0; top: 0; padding: 0; background: none;}
+.header .layui-nav .layui-nav-item{margin: 0 20px; }
+.header .layui-nav .layui-nav-item[mobile]{display: none;}
+
+.logo {
+    position: absolute;
+    left: 0;
+    top: 16px;
+}

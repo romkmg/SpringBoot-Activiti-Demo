@@ -1,0 +1,55 @@
+######################
+#Log4j2配置
+logging:
+  config: classpath:config/log4j2.xml
+
+#Spring配置
+spring:
+    ## 多环境配置
+    profiles:
+        active: dev
+
+    #数据库配置
+    datasource:
+        name: itender
+        url: jdbc:mysql://${db.ip}:3306/${db.name}?useUnicode=true&characterEncoding=utf-8
+        username: ${db.username}
+        password: ${db.password}
+
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        initialSize: 1
+        maxActive: 20
+        maxWait: 30000
+        minIdle: 1
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+        validationQuery: "SELECT 'x'"
+        testWhileIdle: true
+        testOnBorrow: true
+        testOnReturn: true
+        timeBetweenEvictionRunsMillis: 30000
+        minEvictableIdleTimeMillis: 30000
+        keepAlive: true
+
+    #freemarker配置
+    # FREEMARKER (FreeMarkerAutoConfiguration)
+    freemarker:
+      number_format: #
+      allow-request-override: false # Set whether HttpServletRequest attributes are allowed to override (hide) controller generated model attributes of the same name.
+      allow-session-override: false # Set whether HttpSession attributes are allowed to override (hide) controller generated model attributes of the same name.
+      cache: false # Enable templates caching.
+      charset: UTF-8 # Template encoding.
+      check-template-location: true # Check that the templates location exists.
+      content-type: text/html # Content-Type value.
+      enabled: true # Enable MVC view resolution for this technology.
+      expose-request-attributes: false # Set whether all request attributes should be added to the model prior to merging with the templates.
+      expose-session-attributes: false # Set whether all HttpSession attributes should be added to the model prior to merging with the templates.
+      expose-spring-macro-helpers: true # Set whether to expose a RequestContext for use by Spring's macro library, under the name "springMacroRequestContext".
+      prefer-file-system-access: true # Prefer file system access for templates loading. File system access enables hot detection of templates changes.
+      prefix: # Prefix that gets prepended to view names when building a URL.
+      request-context-attribute: # Name of the RequestContext attribute for all views.
+      suffix: .ftl # Suffix that gets appended to view names when building a URL.
+      template-loader-path: classpath:/templates/ # Comma-separated list of templates paths.

@@ -1,0 +1,71 @@
+
+
+.layui-layout-admin .layui-header {
+    background-color: #016EC5;
+}
+.layui-nav .layui-this:after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed:after{
+    background-color:#fff;
+    
+}
+
+.layui-layer-title {
+    padding: 0 20px 0 20px;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #fff;
+    overflow: hidden;
+    background-color: #0154AD;
+    text-align: center;
+    border-radius: 2px 2px 0 0;
+}
+
+.layui-form-pane .layui-form-label {
+    width: 110px;
+    padding: 8px 15px;
+    height: 38px;
+    line-height: 20px;
+    color: #464646;
+    text-align: center;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    background-color: #00000000;
+    border-width: 0px;
+}
+
+.layui-form-pane .layui-input {
+    border-radius: 4px 4px 4px 4px;
+
+}
+
+.layui-table th{
+    color: #464646;
+    text-align: center;
+    font-weight:bold;
+}
+
+.layui-table td{
+    text-align: center;
+}
+.layui-table tbody tr:hover,.layui-table-hover{
+    /*color: #fff;*/
+    background-color: #B9DDF9!important;;
+
+}
+
+.layui-layer-btn .layui-layer-btn0 {
+    border-color: #0154AD;
+    background-color: #0154AD;
+    color: #fff;
+}
+
+
+.layui-form-checked[lay-skin=primary] i {
+    border-color: #0154AD;
+    background-color: #0154AD;
+    color: #fff;
+}
+.layui-laydate-footer span[lay-type=date] {
+    color: #0154AD;
+}
