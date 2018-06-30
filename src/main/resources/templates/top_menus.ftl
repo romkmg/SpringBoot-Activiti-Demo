@@ -1,15 +1,12 @@
-<div class="layui-layout layui-layout-admin layui-header header-index">
+<div class="layui-layout" id="nav">
     <ul class="layui-nav no-border-radius layui-header">
-        <li class="layui-nav-item"><a href="/processDefinitionList">首页</a></li>
-        <li class="layui-nav-item"><a href="/processDefinitionList">任务列表</a></li>
-        <li class="layui-nav-item"><a href="/processDefinitionList">流程管理</a></li>
-        <li class="layui-nav-item"><a href="/management/user">用户</a></li>
+        <li class="layui-nav-item"><a href="/index">首页</a></li>
     </ul>
     <ul class="layui-nav layui-layout-right layui-header">
         <li class="layui-nav-item">
             <a href="javascript:;">
-                <#--<img src="" class="layui-nav-img">-->
-                ${(user.userName)!'#unknow'}
+            <#--<img src="" class="layui-nav-img">-->
+            ${(user.realName)!'#unknow'}
             </a>
             <ul class="layui-nav-child">
                 <li><a id="userDetils" href="javascript:;">基本资料</a></li>
@@ -28,12 +25,10 @@
             }
         })
     });
-
     //注意：导航 依赖 element 模块，否则无法进行功能性操作
-    layui.use(['element','utils'], function () {
+    layui.use(['element', 'm_utils'], function () {
         var element = layui.element
-                ,user = layui.user
-                ,utils = layui.utils;
+                , utils = layui.m_utils;
         $("#logout").click(function () {
             user.userLogout();//安全退出
         });
@@ -47,7 +42,7 @@
                 shadeClose: false,//是否点击遮罩关闭
                 queryId: userId,
                 queryUrl: url
-            },function (layerDom,index) {
+            }, function (layerDom, index) {
 
             });
         });

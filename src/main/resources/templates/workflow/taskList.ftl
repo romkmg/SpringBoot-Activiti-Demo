@@ -1,12 +1,12 @@
 <div class="layui-container margin-top">
     <div class="layui-row">
         <div class="layui-col-md-12 margin-bottom">
-            <button class="layui-btn layui-btn-success" id="addProcess">导入流程</button>
+            <button class="layui-btn layui-btn-success" id="addTask">导入流程</button>
         </div>
     </div>
     <div class="layui-row">
         <div class="layui-col-md-12">
-            <table class="table table-bordered table-hover" id="processTable" lay-filter="processTable">
+            <table class="table table-bordered table-hover" id="taskTable" lay-filter="taskTable">
             </table>
         </div>
 
@@ -16,32 +16,30 @@
 <script type="text/html" id="indexTpl">
     {{d.LAY_TABLE_INDEX+1}}
 </script>
-<script type="text/html" id="processTableTool">
-    <a class="layui-btn layui-btn-xs" lay-event="view">查看</a>
-    <a class="layui-btn layui-btn-xs" lay-event="export">导出</a>
+<script type="text/html" id="taskTableTool">
+    <#--<a class="layui-btn layui-btn-xs" lay-event="edit">部署</a>-->
+    <a class="layui-btn layui-btn-xs" lay-event="export">办理</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
 <script type="text/javascript">
-    layui.use(['table', 'm_utils','m_processDefinition'], function () {
+    layui.use(['table', 'm_utils'], function () {
         var table = layui.table;
         var m_utils = layui.m_utils;
-        var m_processDefinition = layui.m_processDefinition;
 
         //第一个实例
         var currentTable = table.render({
-            elem: "#processTable",
+            elem: "#taskTable",
             page: true,
-            url: "/pagingProcessDefinition",
+            url: "/pagingTask",
             method: "POST",
             cols: [[
-                {field:'processDefinitionId',type:'checkbox'},
                 {title: '序号',templet: '#indexTpl'},
                 {title:'流程名称',field:'name'},
                 {title:'流程标识',field:'key'},
                 {title:'版本',field:'version'},
                 {title:'描述',field:'description'},
-                {fixed: 'right', align: 'center', toolbar: '#processTableTool'}
+                {fixed: 'right', align: 'center', toolbar: '#taskTableTool'}
             ]],
             request: {
                 pageName: 'pageNo' //页码的参数名称，默认：page
@@ -65,26 +63,29 @@
             }
         });
 
-        table.on('tool(processTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(taskTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
-            console.log(data);
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var processId = data.processDefinitionId;
+            var taskId = data.id;
 
-            if (layEvent === 'view') { //查看
-                m_processDefinition.processDefinitionImage(processId);
-            } else if (layEvent === 'export') { //导出
-                m_processDefinition.exportDefinition(processId);
+            if (layEvent === 'export') { //编辑
+
             } else if (layEvent === 'del') { //删除
 
             }
         });
 
-        $("#addProcess").click(function () {
-            m_processDefinition.importDefinition(function (res) {
-                if(res){
-                    currentTable.reload();
-                }
+        $("#addTask").click(function () {
+            var data = {
+                title: '添加角色',//标题
+                area: '60%',//宽高
+                closeBtn: 1,//关闭按钮
+                shadeClose: true,//是否点击遮罩关闭
+                queryId: '',
+                queryUrl: '/task/addTask'
+            };
+            m_utils.openModal(data,function (layerDom,index) {
+                currentTable.reload();
             });
         });
     });

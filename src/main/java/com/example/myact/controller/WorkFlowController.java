@@ -3,6 +3,8 @@ package com.example.myact.controller;
 import com.example.myact.common.model.DeploymentModel;
 import com.example.myact.common.util.Page;
 import com.example.myact.common.util.UserUtil;
+import com.example.myact.convert.LayuiTableData;
+import com.example.myact.convert.PageDataConvert;
 import com.example.myact.service.WorkFlowService;
 import com.example.myact.service.WorkflowTraceService;
 import org.activiti.bpmn.model.BpmnModel;
@@ -120,7 +122,7 @@ public class WorkFlowController {
     @ResponseBody
     public ResponseEntity importDefinition(@RequestParam(value = "file") MultipartFile file) throws IOException {
         this.workFlowService.deploy(file.getOriginalFilename(), file.getInputStream());
-        return ResponseEntity.ok("操作成功！");
+        return ResponseEntity.ok(true);
     }
 
     /*****
@@ -142,10 +144,14 @@ public class WorkFlowController {
      */
     @RequestMapping(value = "pagingProcessDefinition")
     @ResponseBody
-    public Page pagingProcessDefinition(Page page) {
-        return this.workFlowService.pagingProcessDefinition(page);
+    public LayuiTableData pagingProcessDefinition(Page page) {
+        return PageDataConvert.convertToLayuiData(this.workFlowService.pagingProcessDefinition(page));
     }
 
+    @RequestMapping(value = "taskList")
+    public String taskList(){
+        return "workflow/taskList";
+    }
     /****
      * 分页查询任务
      *
@@ -155,7 +161,7 @@ public class WorkFlowController {
      */
     @RequestMapping(value = "pagingTask")
     @ResponseBody
-    public Page taskList(Model model,HttpServletRequest request, Page page, String keywords) {
+    public LayuiTableData taskList(Model model,HttpServletRequest request, Page page, String keywords) {
         //TODO userId需要额外处理
         User user = UserUtil.getUserFromSession(request.getSession());
         String userId = user.getId();
@@ -174,7 +180,7 @@ public class WorkFlowController {
         else{
             page.setResult(q);
         }
-        return page;
+        return PageDataConvert.convertToLayuiData(page);
     }
 
     /****

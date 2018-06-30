@@ -2,26 +2,30 @@ package com.example.myact.service.impl;
 
 import com.example.myact.common.util.Page;
 import com.example.myact.service.WorkFlowService;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.activiti.engine.*;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkFlowServiceImpl implements WorkFlowService {
@@ -92,8 +96,24 @@ public class WorkFlowServiceImpl implements WorkFlowService {
 
     @Override
     public Page pagingProcessDefinition(Page page) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map;
         ProcessDefinitionQuery query = this.responsitorySercvie.createProcessDefinitionQuery().orderByProcessDefinitionName().latestVersion().desc();
-        page.setResult(query.listPage((page.getPageNo() - 1) * page.getPageSize(), (page.getPageNo() - 1) * page.getPageSize() + page.getPageSize()));
+        List<ProcessDefinition> processDefinitionList = query.listPage((page.getPageNo() - 1) * page.getPageSize(), (page.getPageNo() - 1) * page.getPageSize() + page.getPageSize());
+
+        for (ProcessDefinition pd : processDefinitionList) {
+            map = new HashMap<>();
+            map.put("name", pd.getName());
+            map.put("key", pd.getKey());
+            map.put("version", pd.getVersion());
+            map.put("description",pd.getDescription());
+            map.put("processDefinitionId", pd.getId());
+            map.put("deploymentId", pd.getDeploymentId());
+            map.put("resourceName", pd.getResourceName());
+            map.put("diagramResourceName", pd.getDiagramResourceName());
+            list.add(map);
+        }
+        page.setResult(list);
         page.setTotalCount(query.count());
         return page;
     }

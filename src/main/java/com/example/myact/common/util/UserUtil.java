@@ -6,8 +6,8 @@ import javax.servlet.http.HttpSession;
 
 /**
  * 用户工具类
- *
- * @author HenryYan
+ * @Author @MG
+ * @Date 2018/6/30 14:04
  */
 public class UserUtil {
 
@@ -32,6 +32,14 @@ public class UserUtil {
     public static User getUserFromSession(HttpSession session) {
         Object attribute = session.getAttribute(USER);
         return attribute == null ? null : (User) attribute;
+    }
+
+    /**
+     * 移除用户session信息
+     * @return
+     */
+    public static void removeUserSession(HttpSession session) {
+        session.removeAttribute(USER);
     }
 
 }

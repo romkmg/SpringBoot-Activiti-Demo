@@ -19,7 +19,7 @@ public class Page<T> {
     protected boolean autoCount = true;
 
     // -- 返回结果 --//
-    protected List<T> result = new ArrayList<>();
+    protected List result = new ArrayList<>();
     protected long totalCount = -1;
 
     // -- 构造函数 --//
@@ -177,14 +177,14 @@ public class Page<T> {
     /**
      * 获得页内的记录列表.
      */
-    public List<T> getResult() {
+    public List getResult() {
         return result;
     }
 
     /**
      * 设置页内的记录列表.
      */
-    public void setResult(final List<T> result) {
+    public void setResult(final List result) {
         this.result = result;
     }
 

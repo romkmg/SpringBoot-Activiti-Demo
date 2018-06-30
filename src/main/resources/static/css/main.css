@@ -1,3 +1,6 @@
+.layui-header{
+    z-index: 2!important;
+}
 .errorClass{
     color: #c12e2a;
 }
@@ -79,12 +82,19 @@
     border-radius:0!important;
 }
 
-.header .layui-nav{position: absolute; right: 0; top: 0; padding: 0; background: none;}
-.header .layui-nav .layui-nav-item{margin: 0 20px; }
-.header .layui-nav .layui-nav-item[mobile]{display: none;}
-
-.logo {
+/*右键菜单样式*/
+.right-menu{
     position: absolute;
-    left: 0;
-    top: 16px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-bottom: none;
+
+}
+.right-menu li{
+    cursor: pointer;
+    padding-left: 5px;
+    border-bottom: 1px solid #ccc;
+}
+.right-menu li:hover{
+    background-color: #C9C9C9;
 }

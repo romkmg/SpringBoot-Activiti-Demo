@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>MG - Activity Demo</title>
+    <title>Demo</title>
     <#include "resource.ftl">
     <style>
         .layui-tab-title .layui-this:after{
@@ -20,20 +20,22 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">任务列表</a>
+                    <a class="" href="javascript:;">任务管理</a>
                     <dl class="layui-nav-child">
-                        <dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;">用户列表</a></dd>
+                        <dd id="list-task" data-uri="/taskList"><a href="javascript:;">任务列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">流程管理</a>
                     <dl class="layui-nav-child">
-                        <dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;">角色列表</a></dd>
+                        <dd id="list-process" data-uri="/processDefinitionList"><a href="javascript:;">流程列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">权限管理</a>
+                    <a href="javascript:;">用户管理</a>
                     <dl class="layui-nav-child">
+                        <dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;">用户列表</a></dd>
+                        <dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;">角色列表</a></dd>
                         <dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;">权限列表</a></dd>
                     </dl>
                 </li>
@@ -54,15 +56,15 @@
 
     <div class="layui-footer" style="text-align: center">
         <!-- 底部固定区域 -->
-        <span>流程管理</span>
+        <span>CopyRight</span>
     </div>
 </div>
 </body>
 <script>
-    layui.use(['element','utils'], function(){
+    layui.use(['element','m_utils'], function(){
         var $ = layui.jquery
                 ,element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
-                ,utils = layui.utils;
+                ,utils = layui.m_utils;
 
         $('dd').on('click',function () {
             var othis = $(this);
