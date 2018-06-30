@@ -32,7 +32,7 @@
         var currentTable = table.render({
             elem: "#processTable",
             page: true,
-            url: "/pagingProcessDefinition",
+            url: "/workflow/pagingProcessDefinition",
             method: "POST",
             cols: [[
                 {field:'processDefinitionId',type:'checkbox'},
@@ -76,7 +76,12 @@
             } else if (layEvent === 'export') { //导出
                 m_processDefinition.exportDefinition(processId);
             } else if (layEvent === 'del') { //删除
-
+                layui.layer.confirm('您确定要删除？', {icon: 3, title: '删除确认',zIndex:9999999}, function (index) {
+                    m_processDefinition.delDefinition(processId,function (res) {
+                        layer.alert(res.message);
+                        currentTable.reload();
+                    })
+                });
             }
         });
 

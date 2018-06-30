@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions
-        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-        xmlns:activiti="http://activiti.org/bpmn"
-        targetNamespace="Examples">
-
-    <process id="oneTaskProcess" name="The One Task Process">
-        <startEvent id="theStart" />
-        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-        <userTask id="theTask" name="my task" />
-        <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
-        <endEvent id="theEnd" />
-    </process>
-
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="Examples" xmlns:xsd="http://www.w3.org/2001/XMLSchema" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples">
+  <process id="oneTaskProcess" name="流程一" isExecutable="true" isClosed="false" processType="None">
+    <documentation>来一个嘛！</documentation>
+    <startEvent id="theStart" name="开始">
+      <documentation>任务开启！</documentation>
+      <extensionElements>
+        <activiti:formProperty id="userId" name="userId" type="string" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask"></sequenceFlow>
+    <userTask id="theTask" name="确认" activiti:assignee="${userId}">
+      <documentation>需要确认一下!</documentation>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd"></sequenceFlow>
+    <endEvent id="theEnd"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_oneTaskProcess">
+    <bpmndi:BPMNPlane bpmnElement="oneTaskProcess" id="BPMNPlane_oneTaskProcess">
+      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theTask" id="BPMNShape_theTask">
+        <omgdc:Bounds height="55.0" width="85.0" x="112.0" y="188.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="257.0" y="200.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="55.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="112.0" y="215.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="197.0" y="215.0"></omgdi:waypoint>
+        <omgdi:waypoint x="257.0" y="217.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 </definitions>

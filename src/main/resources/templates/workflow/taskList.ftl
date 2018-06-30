@@ -31,7 +31,7 @@
         var currentTable = table.render({
             elem: "#taskTable",
             page: true,
-            url: "/pagingTask",
+            url: "/workflow/pagingTask",
             method: "POST",
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
@@ -82,7 +82,7 @@
                 closeBtn: 1,//关闭按钮
                 shadeClose: true,//是否点击遮罩关闭
                 queryId: '',
-                queryUrl: '/task/addTask'
+                queryUrl: '/workflow/task/addTask'
             };
             m_utils.openModal(data,function (layerDom,index) {
                 currentTable.reload();

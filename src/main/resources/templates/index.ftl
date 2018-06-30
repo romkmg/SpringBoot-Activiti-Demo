@@ -22,13 +22,13 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">任务管理</a>
                     <dl class="layui-nav-child">
-                        <dd id="list-task" data-uri="/taskList"><a href="javascript:;">任务列表</a></dd>
+                        <dd id="list-task" data-uri="/workflow/taskList"><a href="javascript:;">任务列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">流程管理</a>
                     <dl class="layui-nav-child">
-                        <dd id="list-process" data-uri="/processDefinitionList"><a href="javascript:;">流程列表</a></dd>
+                        <dd id="list-process" data-uri="/workflow/processDefinitionList"><a href="javascript:;">流程列表</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">

@@ -53,6 +53,7 @@ import java.util.*;
 
 
 @Controller
+@RequestMapping("/workflow")
 public class WorkFlowController {
     private static final Logger logger = LoggerFactory.getLogger(WorkFlowController.class);
 
@@ -90,6 +91,25 @@ public class WorkFlowController {
         builder.addString(deployment.getProcessName() + ".bpmn", deployment.getProcessDescriptor()).name(deployment.getProcessName());
         builder.deploy();
         return ResponseEntity.ok( "操作成功！");
+    }
+
+    /****
+     * 删除流程定义
+     */
+    @RequestMapping(value = "delete")
+    @ResponseBody
+    public ResponseEntity delete(HttpServletRequest request, HttpServletResponse response, Model model,String processDefinitionId) {
+        Map<String,Object> map = new HashMap<>();
+        List<ProcessDefinition> processDefinitions = this.responsitorySercvie.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).list();
+
+        processDefinitions.forEach(processDefinition -> {
+            String deploymentId = processDefinition.getDeploymentId();
+            responsitorySercvie.deleteDeployment(deploymentId,true);
+        });
+
+        map.put("status",true);
+        map.put("message","操作成功!");
+        return ResponseEntity.ok(map);
     }
 
     /****
@@ -331,6 +351,10 @@ public class WorkFlowController {
         return view;
     }
 
+    /**
+     * 启动流程
+     * @return
+     */
     @RequestMapping(value = "start")
     public String start(String processDefinitionId, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         //TODO  userId 需要额外处理
