@@ -199,6 +199,7 @@ public class WorkFlowController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (Task task : q) {
             map = new HashMap<>();
+            map.put("taskId",task.getId());
             map.put("name", task.getName());
             map.put("description",task.getDescription());
             map.put("processDefinitionId", task.getId());

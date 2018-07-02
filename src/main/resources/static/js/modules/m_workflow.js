@@ -250,11 +250,41 @@ layui.define(function (exports) {
         },
 
         claim:function (data,callback) {
+            var index = layui.layer.load(2);
+            $.ajax({
+                url: "/workflow/claim",
+                type:"post",
+                data:{"taskId":data},
+                dataType:"json",
+                success: function (res) {
+                    layui.layer.close(index);
+                    callback(res);
+                },
+                error: function (xmlHttpReq, error, ex) {
+                    layui.layer.close(index);
+                }
+            });
 
         },
 
         process:function (data,callback) {
-
+            var syncServer = function (data,callback) {
+                $.ajax({
+                    url: "/workflow/completeForm",
+                    type:"post",
+                    data:data,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        layui.layer.close(index);
+                        callback(res);
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+                        layui.layer.close(index);
+                    }
+                });
+            }
         }
     };
 

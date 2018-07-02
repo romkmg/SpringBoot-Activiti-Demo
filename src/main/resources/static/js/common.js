@@ -19,7 +19,7 @@ layui.config({
     m_role: "m_role",
     m_privilege: "m_privilege",
     m_utils:"m_utils",
-    m_processDefinition:"m_processDefinition"
+    m_workflow:"m_workflow"
 });
 
 var view = {
