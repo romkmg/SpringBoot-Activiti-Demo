@@ -2,11 +2,8 @@
  * 工具模块
  */
 layui.define(function (exports) {
-    layui.use(["layer","element","form"], function () {
 
-    });
-
-    var ProcessDefinitionObj = {
+    var WorkflowObj = {
 
         importDefinition: function (callback) {
             var html = '<form class="layui-form" enctype="multipart/form-data">' +
@@ -67,7 +64,7 @@ layui.define(function (exports) {
                 })
             }
         },
-        processDefinitionImage: function(id,callback) {
+        WorkflowImage: function(id,callback) {
             var json = {
                 "title": "", //相册标题
                 "id": 123, //相册id
@@ -76,7 +73,7 @@ layui.define(function (exports) {
                     {
                         "alt": "流程图",
                         "pid": 666, //图片id
-                        "src": "/workflow/processDefinitionImage?processDefinitionId="+id, //原图地址
+                        "src": "/workflow/WorkflowImage?WorkflowId="+id, //原图地址
                         "thumb": "" //缩略图地址
                     }
                 ]
@@ -88,13 +85,13 @@ layui.define(function (exports) {
         },
 
         exportDefinition: function (id,callback) {
-            view.openNew("/workflow/exportDefinition?processDefinitionId="+id);
+            view.openNew("/workflow/exportDefinition?WorkflowId="+id);
         },
 
         delDefinition:function (id,callback) {
             var syncServer = function (id,callback) {
                 $.ajax({
-                    url:"/workflow/delete",
+                    url:"/workflow/unDeploy",
                     type:"POST",
                     cache:false,
                     data:{"id":id},
@@ -110,6 +107,86 @@ layui.define(function (exports) {
             syncServer(id,function (res) {
                 callback(res);
             });
+        },
+
+        getStartFromData:function (id,callback) {
+
+            var syncServer = function (id,callback) {
+                $.ajax({
+                    url:"/workflow/startFormById",
+                    type:"POST",
+                    cache:false,
+                    data:{"WorkflowId":id},
+                    dataType:'json',
+                    success:function(result){
+                        callback(result);
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+
+                    }
+
+                });
+            };
+
+            syncServer(id,function (res) {
+                if(res.id!==''){
+                    var property ='';
+                    $.each(res.formProperties,function (i,d) {
+                        property +=
+                            '   <div class="layui-form-item">\n' +
+                            '   <label class="layui-form-label">'+d.name+':</label>\n' +
+                            '    <div class="layui-input-inline">\n' +
+                            '      <input class="layui-input" name="'+d.id+'" required="'+d.required+'" value="'+d.value+'"> \n' +
+                            '    </div>\n' +
+                            '   </div>';
+                    });
+                    var html =
+                        '<form class="layui-form">'
+                        +property+
+                        '   <div class="layui-form-item">\n' +
+                        '    <div class="layui-input-block">\n' +
+                        '      <button class="layui-btn" lay-submit lay-filter="ok" style="width: 150px;">确认</button>\n' +
+                        '    </div>\n' +
+                        '   </div>'+
+                        '</form>';
+                    var index_ = layer.open({
+                        type: 1,
+                        title: res.name,
+                        content: html,
+                        area:['400px'],
+                        btn: false,
+                        success: function(index, layero){
+                            layui.form.render();
+                            layui.form.on('submit(ok)',function (data) {
+                                layui.layer.close(index_);
+                                WorkflowObj.start(id,data.field);
+                                return false;
+                            });
+                        }
+                    });
+                }
+            });
+        },
+
+        start:function(id,formData,callback){
+            var syncServer = function (data,callback) {
+                $.ajax({
+                    url:"/workflow/start",
+                    type:"POST",
+                    data:data,
+                    dataType:"json",
+                    success:function (res) {
+                        callback(res);
+                    }
+                });
+            };
+
+            formData.WorkflowId = id;
+            console.debug(formData);
+            syncServer(formData,function (res) {
+                callback(res);
+            });
+
         },
 
         optProcessinstance:function (id,state,callback) {
@@ -170,42 +247,67 @@ layui.define(function (exports) {
                     }
                 })
             }
+        },
+
+        claim:function (data,callback) {
+
+        },
+
+        process:function (data,callback) {
+
         }
     };
 
     /**
      * 对外暴露的方法
      */
-    exports("m_processDefinition", {
+    exports("m_workflow", {
 
         /**
          * 导入并部署流程
          * @param callback
          */
         importDefinition: function (callback) {
-            ProcessDefinitionObj.importDefinition(callback);
+            WorkflowObj.importDefinition(callback);
         },
         /**
          * 查看流程图
          * @param data
          * @param callback
          */
-        processDefinitionImage: function (data,callback) {
-            ProcessDefinitionObj.processDefinitionImage(data,callback);
+        WorkflowImage: function (data,callback) {
+            WorkflowObj.WorkflowImage(data,callback);
         },
 
         /**
          * 导出流程实例
          */
         exportDefinition:function (id,callback) {
-            ProcessDefinitionObj.exportDefinition(id,callback);
+            WorkflowObj.exportDefinition(id,callback);
         },
 
         /**
          * 删除流程定义
          */
         delDefinition:function (id,callback) {
-            ProcessDefinitionObj.delDefinition(id,callback);
+            WorkflowObj.delDefinition(id,callback);
+        },
+
+        /**
+         * 获取启动流程动态表单字段
+         */
+        startProcessinstance:function (id,callback) {
+            WorkflowObj.getStartFromData(id,callback);
+        },
+
+        /**
+         * 启动流程
+         * @param id 流程定义ID
+         * @param formData 表单数据
+         * @param callback
+         */
+        start:function (id,formData,callback) {
+            WorkflowObj.start(id,formData,callback);
         },
 
         /**
@@ -215,7 +317,25 @@ layui.define(function (exports) {
          * @param callback
          */
         optProcessinstance:function (id,state,callback) {
-            ProcessDefinitionObj.optProcessinstance(id,state,callback);
+            WorkflowObj.optProcessinstance(id,state,callback);
+        },
+
+        /**
+         * 任务签收
+         * @param data
+         * @param callback
+         */
+        claim:function (data,callback) {
+            WorkflowObj.claim(data,callback);
+        },
+
+        /**
+         * 任务办理
+         * @param data
+         * @param callback
+         */
+        process:function (data,callback) {
+            WorkflowObj.process(data,callback);
         }
 
 

@@ -17,16 +17,17 @@
     {{d.LAY_TABLE_INDEX+1}}
 </script>
 <script type="text/html" id="processTableTool">
+    <a class="layui-btn layui-btn-xs" lay-event="start">启动</a>
     <a class="layui-btn layui-btn-xs" lay-event="view">查看</a>
     <a class="layui-btn layui-btn-xs" lay-event="export">导出</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
 <script type="text/javascript">
-    layui.use(['table', 'm_utils','m_processDefinition'], function () {
+    layui.use(['table', 'm_utils','m_workflow'], function () {
         var table = layui.table;
         var m_utils = layui.m_utils;
-        var m_processDefinition = layui.m_processDefinition;
+        var m_workflow = layui.m_workflow;
 
         //第一个实例
         var currentTable = table.render({
@@ -36,12 +37,12 @@
             method: "POST",
             cols: [[
                 {field:'processDefinitionId',type:'checkbox'},
-                {title: '序号',templet: '#indexTpl'},
-                {title:'流程名称',field:'name'},
-                {title:'流程标识',field:'key'},
-                {title:'版本',field:'version'},
-                {title:'描述',field:'description'},
-                {fixed: 'right', align: 'center', toolbar: '#processTableTool'}
+                {title: '序号',templet: '#indexTpl',width:'100'},
+                {title:'流程名称',field:'name',width:'150'},
+                {title:'流程标识',field:'key',width:'200'},
+                {title:'版本',field:'version',width:'100'},
+                {title:'描述',field:'description',width:'300'},
+                {fixed: 'right', align: 'center', toolbar: '#processTableTool',width:'200'}
             ]],
             request: {
                 pageName: 'pageNo' //页码的参数名称，默认：page
@@ -71,13 +72,17 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var processId = data.processDefinitionId;
 
-            if (layEvent === 'view') { //查看
-                m_processDefinition.processDefinitionImage(processId);
+            if (layEvent === 'start') { //开启流程
+                m_workflow.startProcessinstance(processId,function (res) {
+                    
+                });
+            }else if (layEvent === 'view') { //查看
+                m_workflow.processDefinitionImage(processId);
             } else if (layEvent === 'export') { //导出
-                m_processDefinition.exportDefinition(processId);
+                m_workflow.exportDefinition(processId);
             } else if (layEvent === 'del') { //删除
                 layui.layer.confirm('您确定要删除？', {icon: 3, title: '删除确认',zIndex:9999999}, function (index) {
-                    m_processDefinition.delDefinition(processId,function (res) {
+                    m_workflow.delDefinition(processId,function (res) {
                         layer.alert(res.message);
                         currentTable.reload();
                     })
@@ -86,7 +91,7 @@
         });
 
         $("#addProcess").click(function () {
-            m_processDefinition.importDefinition(function (res) {
+            m_workflow.importDefinition(function (res) {
                 if(res){
                     currentTable.reload();
                 }

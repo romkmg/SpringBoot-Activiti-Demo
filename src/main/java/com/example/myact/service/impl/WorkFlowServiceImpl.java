@@ -122,6 +122,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
     public void deploy(String fileName,InputStream inputStream){
         DeploymentBuilder builder = this.responsitorySercvie.createDeployment();
         builder.addInputStream(fileName, inputStream);
+        builder.name(fileName);
         builder.deploy();
     }
 

@@ -1,9 +1,9 @@
 <div class="layui-container margin-top">
-    <div class="layui-row">
-        <div class="layui-col-md-12 margin-bottom">
-            <button class="layui-btn layui-btn-success" id="addTask">导入流程</button>
-        </div>
-    </div>
+    <#--<div class="layui-row">-->
+        <#--<div class="layui-col-md-12 margin-bottom">-->
+            <#--<button class="layui-btn layui-btn-success" id="addTask">导入流程</button>-->
+        <#--</div>-->
+    <#--</div>-->
     <div class="layui-row">
         <div class="layui-col-md-12">
             <table class="table table-bordered table-hover" id="taskTable" lay-filter="taskTable">
@@ -17,9 +17,11 @@
     {{d.LAY_TABLE_INDEX+1}}
 </script>
 <script type="text/html" id="taskTableTool">
-    <#--<a class="layui-btn layui-btn-xs" lay-event="edit">部署</a>-->
-    <a class="layui-btn layui-btn-xs" lay-event="export">办理</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# if(d.assignee){ }}
+        <a class="layui-btn layui-btn-xs" lay-event="claim">签收</a>
+    {{# }else{ }}
+        <a class="layui-btn layui-btn-xs" lay-event="process">办理</a>
+    {{# } }}
 </script>
 
 <script type="text/javascript">
@@ -35,10 +37,9 @@
             method: "POST",
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
-                {title:'流程名称',field:'name'},
-                {title:'流程标识',field:'key'},
-                {title:'版本',field:'version'},
-                {title:'描述',field:'description'},
+                {title:'任务名称',field:'name'},
+                {title:'任务描述',field:'description'},
+                {title:'创建时间',field:'createTime'},
                 {fixed: 'right', align: 'center', toolbar: '#taskTableTool'}
             ]],
             request: {
@@ -68,26 +69,13 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var taskId = data.id;
 
-            if (layEvent === 'export') { //编辑
+            if (layEvent === 'process') { //办理
 
-            } else if (layEvent === 'del') { //删除
+            } else if (layEvent === 'claim') { //签收
 
             }
         });
 
-        $("#addTask").click(function () {
-            var data = {
-                title: '添加角色',//标题
-                area: '60%',//宽高
-                closeBtn: 1,//关闭按钮
-                shadeClose: true,//是否点击遮罩关闭
-                queryId: '',
-                queryUrl: '/workflow/task/addTask'
-            };
-            m_utils.openModal(data,function (layerDom,index) {
-                currentTable.reload();
-            });
-        });
     });
 
 </script>

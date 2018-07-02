@@ -96,7 +96,7 @@ public class WorkFlowController {
     /****
      * 删除流程定义
      */
-    @RequestMapping(value = "delete")
+    @RequestMapping(value = "unDeploy")
     @ResponseBody
     public ResponseEntity delete(HttpServletRequest request, HttpServletResponse response, Model model,String processDefinitionId) {
         Map<String,Object> map = new HashMap<>();
@@ -193,12 +193,24 @@ public class WorkFlowController {
         query.orderByTaskCreateTime().desc();
         page.setTotalCount(query.count());
         List<Task> q = query.listPage((page.getPageNo() - 1) * page.getPageSize(), (page.getPageNo() - 1) * page.getPageSize() + page.getPageSize());
-        if(q.size()>page.getPageSize()){
-            List<Task> rows = q.subList(0, page.getPageSize());
-            page.setResult(rows);
+
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (Task task : q) {
+            map = new HashMap<>();
+            map.put("name", task.getName());
+            map.put("description",task.getDescription());
+            map.put("processDefinitionId", task.getId());
+            map.put("createTime",simpleDateFormat.format(task.getCreateTime()));
+            map.put("assignee",task.getAssignee());
+            list.add(map);
         }
-        else{
-            page.setResult(q);
+
+        if(list.size()>page.getPageSize()){
+            page.setResult(list.subList(0, page.getPageSize()));
+        }else{
+            page.setResult(list);
         }
         return PageDataConvert.convertToLayuiData(page);
     }
@@ -269,11 +281,20 @@ public class WorkFlowController {
     }
 
     /**
-     * 读取启动流程的表单字段
+     * 通过流程Key读取启动流程的表单字段，并返回表单字段
+     */
+    @RequestMapping(value = "startFormByKey")
+    @ResponseBody
+    public ResponseEntity startFormByKey(String processDefinitionKey) throws Exception {
+        ProcessDefinitionQuery query = this.responsitorySercvie.createProcessDefinitionQuery().latestVersion().processDefinitionKey(processDefinitionKey);
+        return this.startFormById(query.singleResult().getId());
+    }
+    /**
+     * 通过流程Id读取启动流程的表单字段，并返回表单字段
      */
     @RequestMapping(value = "startFormById")
     @ResponseBody
-    public Map<String, Object> startFormById(String processDefinitionId) throws Exception {
+    public ResponseEntity startFormById(String processDefinitionId) throws Exception {
         Map<String, Object> result = new HashMap<String, Object>();
         StartFormDataImpl startFormData = (StartFormDataImpl) formService.getStartFormData(processDefinitionId);
         /*
@@ -293,35 +314,30 @@ public class WorkFlowController {
                 result.put("enum_" + formProperty.getId(), values);
             }
         }
+        for (FormProperty formProperty : formProperties) {
+            String id = formProperty.getId();
+            result.put(id, formProperty.getValue());
+        }
         result.put("formProperties", startFormData.getFormProperties());
         result.put("name", startFormData.getProcessDefinition().getName());
         result.put("id", startFormData.getProcessDefinition().getId());
-        return result;
+        return ResponseEntity.ok(result);
     }
 
-    /**
-     * 读取启动流程的表单字段
-     */
-    @RequestMapping(value = "startFormByKey")
-    @ResponseBody
-    public Map<String, Object> startFormByKey(String processDefinitionKey) throws Exception {
-        ProcessDefinitionQuery query = this.responsitorySercvie.createProcessDefinitionQuery().latestVersion().processDefinitionKey(processDefinitionKey);
-        return this.startFormById(query.singleResult().getId());
-    }
 
     /**
-     * 读取启动流程的表单字段
+     * 通过流程Key读取启动流程的表单字段,并跳转至页面
      */
-    @RequestMapping(value = "startCustomFormByKey")
+    @RequestMapping(value = "startFormByKeyToView")
     public String startCustomFormByKey(Model model, String processDefinitionKey) throws Exception {
         ProcessDefinitionQuery query = this.responsitorySercvie.createProcessDefinitionQuery().latestVersion().processDefinitionKey(processDefinitionKey);
         return this.startCustomFormById(model, query.singleResult().getId());
     }
 
     /**
-     * 读取启动流程的表单字段
+     * 通过流程Id读取启动流程的表单字段,并跳转至页面
      */
-    @RequestMapping(value = "startCustomFormById")
+    @RequestMapping(value = "startFormByIdToView")
     public String startCustomFormById(Model model, String processDefinitionId) throws Exception {
         Map<String, Object> result = new HashMap<String, Object>();
         StartFormDataImpl startFormData = (StartFormDataImpl) formService.getStartFormData(processDefinitionId);
