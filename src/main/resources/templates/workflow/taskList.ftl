@@ -22,6 +22,12 @@
     {{# }else{ }}
         <a class="layui-btn layui-btn-xs" lay-event="claim">签收</a>
     {{# } }}
+
+    {{# if(d.isSuspended){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="active">激活</a>
+    {{# }else{ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="suspend">挂起</a>
+    {{# } }}
 </script>
 
 <script type="text/javascript">
@@ -75,13 +81,25 @@
                 console.debug(taskId);
                 m_workflow.complete(data,function (res) {
                     layer.msg(res.message);
-                    currentTable.reload();
+                    if(res.status){
+                        currentTable.reload();
+                    }
                 });
             } else if (layEvent === 'claim') { //签收
                 console.debug(taskId);
                 m_workflow.claim(taskId,function (res) {
                     currentTable.reload();
                 });
+            } else if (layEvent === 'active'){//激活
+                m_workflow.optProcessinstance(data.processInstanceId,"active",function (res) {
+                    layer.msg(res.message);
+                    currentTable.reload();
+                })
+            } else if (layEvent === 'suspend'){//挂起
+                m_workflow.optProcessinstance(data.processInstanceId,"suspend",function (res) {
+                    layer.msg(res.message);
+                    currentTable.reload();
+                })
             }
         });
 

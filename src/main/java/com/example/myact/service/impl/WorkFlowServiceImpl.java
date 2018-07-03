@@ -111,6 +111,7 @@ public class WorkFlowServiceImpl implements WorkFlowService {
             map.put("deploymentId", pd.getDeploymentId());
             map.put("resourceName", pd.getResourceName());
             map.put("diagramResourceName", pd.getDiagramResourceName());
+            map.put("isSuspended",pd.isSuspended());
             list.add(map);
         }
         page.setResult(list);

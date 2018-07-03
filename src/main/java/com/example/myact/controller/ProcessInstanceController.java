@@ -5,6 +5,8 @@ import com.example.myact.common.util.PageUtil;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = "/workflow/processinstance")
 public class ProcessInstanceController {
+    private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceController.class);
 
     @Autowired
     private RuntimeService runtimeService;
@@ -50,17 +53,21 @@ public class ProcessInstanceController {
         switch (state) {
             case "active":
                 map.put("message", "已激活ID为[" + processInstanceId + "]的流程实例。");
+                logger.info("已激活ID为[" + processInstanceId + "]的流程实例。");
                 runtimeService.activateProcessInstanceById(processInstanceId);
                 break;
             case "suspend":
                 runtimeService.suspendProcessInstanceById(processInstanceId);
                 map.put("message", "已挂起ID为[" + processInstanceId + "]的流程实例。");
+                logger.info("已挂起ID为[" + processInstanceId + "]的流程实例。");
                 break;
             case "delete":
                 runtimeService.deleteProcessInstance(processInstanceId, describe);
                 map.put("message", "已删除ID为[" + processInstanceId + "]的流程实例。");
+                logger.info("已删除ID为[" + processInstanceId + "]的流程实例。");
                 break;
             default:
+                logger.error("操作参数异常！");
                 map.put("message","操作失败！");
                 map.put("status",false);
                 return ResponseEntity.ok(map);

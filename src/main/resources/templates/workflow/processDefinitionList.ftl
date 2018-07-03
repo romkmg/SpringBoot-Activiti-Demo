@@ -39,11 +39,11 @@
             cols: [[
                 {field:'processDefinitionId',type:'checkbox'},
                 {title: '序号',templet: '#indexTpl',width:'100'},
-                {title:'流程名称',field:'name',width:'150'},
+                {title:'流程名称',field:'name',width:'130'},
                 {title:'流程标识',field:'key',width:'200'},
                 {title:'版本',field:'version',width:'100'},
                 {title:'描述',field:'description',width:'300'},
-                {fixed: 'right', align: 'center', toolbar: '#processTableTool',width:'200'}
+                {fixed: 'right', align: 'center', toolbar: '#processTableTool',width:'250'}
             ]],
             request: {
                 pageName: 'pageNo' //页码的参数名称，默认：page
@@ -79,7 +79,7 @@
                         layer.msg(res.message);
                     });
                 });
-            }else if (layEvent === 'view') { //查看
+            } else if (layEvent === 'view') { //查看
                 m_workflow.processDefinitionImage(processId);
             } else if (layEvent === 'export') { //导出
                 m_workflow.exportDefinition(processId);

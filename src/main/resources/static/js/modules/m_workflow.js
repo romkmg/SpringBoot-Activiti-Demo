@@ -64,7 +64,7 @@ layui.define(function (exports) {
                 })
             }
         },
-        WorkflowImage: function(id,callback) {
+        processDefinitionImage: function(id,callback) {
             var json = {
                 "title": "", //相册标题
                 "id": 123, //相册id
@@ -73,7 +73,7 @@ layui.define(function (exports) {
                     {
                         "alt": "流程图",
                         "pid": 666, //图片id
-                        "src": "/workflow/WorkflowImage?WorkflowId="+id, //原图地址
+                        "src": "/workflow/processDefinitionImage?processDefinitionId="+id, //原图地址
                         "thumb": "" //缩略图地址
                     }
                 ]
@@ -85,7 +85,7 @@ layui.define(function (exports) {
         },
 
         exportDefinition: function (id,callback) {
-            view.openNew("/workflow/exportDefinition?WorkflowId="+id);
+            view.openNew("/workflow/exportDefinition?processDefinitionId="+id);
         },
 
         delDefinition:function (id,callback) {
@@ -192,54 +192,11 @@ layui.define(function (exports) {
         },
 
         optProcessinstance:function (id,state,callback) {
-            var title = "";
-            if(state==="suspend"){
-                title = "挂起流程实例";
-            }else if(state==="active"){
-                title = "激活流程实例";
-            }else if(state==="delete"){
-                title = "删除流程实例";
-            }
-            var html = '<form class="layui-form">' +
-                        '   <div class="layui-form-item">\n' +
-                        '   <label class="layui-form-label">原因:</label>\n' +
-                        '    <div class="layui-input-inline">\n' +
-                        '      <textarea class="layui-input" style="width: 250px;height: 90px"></textarea>\n' +
-                        '    </div>\n' +
-                        '   </div>'+
-                        '   <div class="layui-form-item">\n' +
-                        '    <div class="layui-input-block">\n' +
-                        '      <button class="layui-btn" lay-submit lay-filter="ok" style="width: 150px;">确认</button>\n' +
-                        '    </div>\n' +
-                        '   </div>'+
-                        '</form>';
-
-            var index_ = layer.open({
-                type: 1,
-                title: title,
-                content: html,
-                area:['400px','205px'],
-                btn: false,
-                success: function(index, layero){
-                    layui.form.render();
-                    layui.form.on('submit(ok)',function (data) {
-                        console.log(data);
-                        syncServer(data.field,function (res) {
-                            layui.layer.close(index_);
-                            callback(res);
-                        });
-                        return false;
-                    });
-                }
-            });
-            var syncServer = function (data, callback) {
+            var syncServer = function (id,state, callback) {
+                var index = layui.layer.load(2);
                 $.ajax({
                     url: "/workflow/processinstance/update/"+state+"/"+id,
                     type:"post",
-                    data:data,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
                     success: function (res) {
                         layui.layer.close(index);
                         callback(res);
@@ -248,7 +205,13 @@ layui.define(function (exports) {
                         layui.layer.close(index);
                     }
                 })
-            }
+            };
+
+            syncServer(id,state,function (res) {
+                if(typeof callback==="function"){
+                    callback(res);
+                }
+            });
         },
 
         claim:function (data,callback) {
@@ -311,8 +274,8 @@ layui.define(function (exports) {
          * @param data
          * @param callback
          */
-        WorkflowImage: function (data,callback) {
-            WorkflowObj.WorkflowImage(data,callback);
+        processDefinitionImage: function (data,callback) {
+            WorkflowObj.processDefinitionImage(data,callback);
         },
 
         /**

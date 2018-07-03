@@ -201,11 +201,13 @@ public class WorkFlowController {
         for (Task task : q) {
             map = new HashMap<>();
             map.put("taskId",task.getId());
+            map.put("processInstanceId",task.getProcessInstanceId());
             map.put("name", task.getName());
             map.put("description",task.getDescription());
             map.put("processDefinitionId", task.getId());
             map.put("createTime",simpleDateFormat.format(task.getCreateTime()));
             map.put("assignee",task.getAssignee());
+            map.put("isSuspended",task.isSuspended());
             list.add(map);
         }
 
@@ -428,6 +430,11 @@ public class WorkFlowController {
         String userId = user.getId();
 
         Task task = this.taskService.createTaskQuery().taskId(taskId).singleResult();
+        if(task.isSuspended()){
+            result.put("message","任务处于被挂起状态，无法办理！");
+            result.put("status",false);
+            return ResponseEntity.ok(result);
+        }
         String nextMessage = null;
         if (task == null || !userId.equals(task.getAssignee())) {
             logger.error("######################################");
