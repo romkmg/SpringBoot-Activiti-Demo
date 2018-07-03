@@ -25,10 +25,11 @@
 </script>
 
 <script type="text/javascript">
-    layui.use(['table', 'm_utils','m_workflow'], function () {
+    layui.use(['layer','table', 'm_utils','m_workflow'], function () {
         var table = layui.table;
         var m_utils = layui.m_utils;
         var m_workflow = layui.m_workflow;
+        var layer = layui.layer;
 
         //第一个实例
         var currentTable = table.render({
@@ -72,8 +73,9 @@
 
             if (layEvent === 'process') { //办理
                 console.debug(taskId);
-                m_workflow.process(data,function (res) {
-                    
+                m_workflow.complete(data,function (res) {
+                    layer.msg(res.message);
+                    currentTable.reload();
                 });
             } else if (layEvent === 'claim') { //签收
                 console.debug(taskId);

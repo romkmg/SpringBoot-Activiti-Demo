@@ -1,5 +1,6 @@
 package com.example.myact.controller;
 
+import com.example.myact.common.exception.TaskNotFinishException;
 import com.example.myact.common.model.DeploymentModel;
 import com.example.myact.common.util.Page;
 import com.example.myact.common.util.UserUtil;
@@ -373,7 +374,8 @@ public class WorkFlowController {
      * @return
      */
     @RequestMapping(value = "start")
-    public String start(String processDefinitionId, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public ResponseEntity start(String id, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+        Map<String,Object> result = new HashMap<>();
         //TODO  userId 需要额外处理
         User user = UserUtil.getUserFromSession(request.getSession());
         String userId = user.getId();
@@ -384,7 +386,7 @@ public class WorkFlowController {
         for (Map.Entry<String, String[]> entry : entrySet) {
             String key = entry.getKey();
             // fp_的意思是form paremeter
-            for (FormProperty formProperty : formService.getStartFormData(processDefinitionId).getFormProperties()) {
+            for (FormProperty formProperty : formService.getStartFormData(id).getFormProperties()) {
                 if (formProperty.getId().equals(key) && formProperty.isWritable()) {
                     formProperties.put(key, StringUtils.join(entry.getValue(), ","));
                 }
@@ -397,23 +399,30 @@ public class WorkFlowController {
             // return "redirect:/base/toLogin";
         }
         identityService.setAuthenticatedUserId(userId);
-        ProcessInstance processInstance = formService.submitStartFormData(processDefinitionId, formProperties);
+        ProcessInstance processInstance = formService.submitStartFormData(id, formProperties);
         logger.debug("start a processinstance: {}", processInstance);
-        redirectAttributes.addFlashAttribute("message", "启动成功，流程ID：" + processInstance.getId());
+        logger.info("启动成功，流程ID：" + processInstance.getId());
+
         List<Task> list = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskAssignee(userId).list();
         if (list.size() == 1) {
-            return "redirect:/workflow/customTaskForm?taskId=" + list.get(0).getId();
+            result.put("message",list.get(0).getDescription());
+            result.put("status",true);
+            result.put("next",true);
+            return ResponseEntity.ok(result);
         } else {
-            return "redirect:/workflow/taskList";
+            result.put("message","启动成功!");
+            result.put("status",true);
+            result.put("next",false);
+            return ResponseEntity.ok(result);
         }
-        // return new Ajax(true, "操作成功！");
     }
 
     /**
      * 提交task的并保存form
      */
     @RequestMapping(value = "completeForm")
-    public String completeForm(HttpServletRequest request, HttpServletResponse response, Map<String, Object> map, RedirectAttributes redirectAttributes, String taskId, Model model) {
+    public ResponseEntity completeForm(HttpServletRequest request, HttpServletResponse response, Map<String, Object> map, String taskId, Model model) {
+        Map<String,Object> result = new HashMap<>();
         //TODO  userId 需要额外处理
         User user = UserUtil.getUserFromSession(request.getSession());
         String userId = user.getId();
@@ -421,8 +430,12 @@ public class WorkFlowController {
         Task task = this.taskService.createTaskQuery().taskId(taskId).singleResult();
         String nextMessage = null;
         if (task == null || !userId.equals(task.getAssignee())) {
-            System.out.println("任务找不到！！！！！！！！！！！！！！");
-            return "workflow/taskNotFound";
+            logger.error("######################################");
+            logger.error("###############任务找不到！#############");
+            logger.error("######################################");
+            result.put("message","任务找不到！");
+            result.put("status",false);
+            return ResponseEntity.ok(result);
         } else {
             String executionId = this.taskService.createTaskQuery().taskId(taskId).singleResult().getExecutionId();
             Map<String, String> formProperties = new HashMap<String, String>();
@@ -446,24 +459,32 @@ public class WorkFlowController {
                 identityService.setAuthenticatedUserId(userId);
                 formService.submitTaskFormData(taskId, formProperties);
             } catch (ActivitiException e) {
-                logger.error(e.getMessage(), e);;
-//                if (e.getCause() != null && e.getCause().getCause() != null && e.getCause().getCause().getCause() instanceof TaskNotFinishException) {
-//                    redirectAttributes.addFlashAttribute("message", e.getCause().getCause().getCause().getMessage());
-//                    return "redirect:/workflow/customTaskForm?taskId=" + taskId;
-//                } else {
+                logger.error(e.getMessage(), e);
+                if (e.getCause() != null && e.getCause().getCause() != null && e.getCause().getCause().getCause() instanceof TaskNotFinishException) {
+                    result.put("message",e.getCause().getCause().getCause().getMessage());
+                    result.put("status",false);
+                    return ResponseEntity.ok(result);
+                } else {
                     throw e;
-//                }
+                }
             }
             List<Task> list = this.taskService.createTaskQuery().executionId(executionId).taskAssignee(userId).list();
             if (list.size() == 1) {
-                return "redirect:/workflow/customTaskForm?taskId=" + list.get(0).getId();
+                result.put("message",list.get(0).getDescription());
+                result.put("next",true);
+                result.put("status",true);
+                return ResponseEntity.ok(result);
             } else {
-                System.out.println(nextMessage);
+                result.put("next",false);
+                logger.info("nextMessage:" + nextMessage);
                 if (StringUtils.isNotBlank(nextMessage)) {
-                    map.put("nextMessage", nextMessage);
-                    return "workflow/taskTipMessage";
+                    result.put("message",nextMessage);
+                    result.put("status",true);
+                    return ResponseEntity.ok(result);
                 }
-                return "redirect:/home";
+                result.put("message","处理成功！");
+                result.put("status",true);
+                return ResponseEntity.ok(result);
             }
         }
     }

@@ -24,10 +24,11 @@
 </script>
 
 <script type="text/javascript">
-    layui.use(['table', 'm_utils','m_workflow'], function () {
+    layui.use(['layer','table', 'm_utils','m_workflow'], function () {
         var table = layui.table;
         var m_utils = layui.m_utils;
         var m_workflow = layui.m_workflow;
+        var layer = layui.layer;
 
         //第一个实例
         var currentTable = table.render({
@@ -73,8 +74,10 @@
             var processId = data.processDefinitionId;
 
             if (layEvent === 'start') { //开启流程
-                m_workflow.startProcessinstance(processId,function (res) {
-                    
+                m_workflow.doProcess(processId,function (id,data) {
+                    m_workflow.start(id,data,function (res) {
+                        layer.msg(res.message);
+                    });
                 });
             }else if (layEvent === 'view') { //查看
                 m_workflow.processDefinitionImage(processId);

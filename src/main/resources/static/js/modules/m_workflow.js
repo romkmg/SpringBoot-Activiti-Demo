@@ -116,7 +116,7 @@ layui.define(function (exports) {
                     url:"/workflow/startFormById",
                     type:"POST",
                     cache:false,
-                    data:{"WorkflowId":id},
+                    data:{"processDefinitionId":id},
                     dataType:'json',
                     success:function(result){
                         callback(result);
@@ -159,7 +159,9 @@ layui.define(function (exports) {
                             layui.form.render();
                             layui.form.on('submit(ok)',function (data) {
                                 layui.layer.close(index_);
-                                WorkflowObj.start(id,data.field);
+                                if(typeof callback === "function"){
+                                    callback(id,data.field);
+                                }
                                 return false;
                             });
                         }
@@ -181,7 +183,7 @@ layui.define(function (exports) {
                 });
             };
 
-            formData.WorkflowId = id;
+            formData.id = id;
             console.debug(formData);
             syncServer(formData,function (res) {
                 callback(res);
@@ -267,15 +269,14 @@ layui.define(function (exports) {
 
         },
 
-        process:function (data,callback) {
+        complete:function (data,callback) {
+            var index = layui.layer.load(2);
             var syncServer = function (data,callback) {
                 $.ajax({
                     url: "/workflow/completeForm",
                     type:"post",
                     data:data,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
+                    dataType:"json",
                     success: function (res) {
                         layui.layer.close(index);
                         callback(res);
@@ -284,7 +285,12 @@ layui.define(function (exports) {
                         layui.layer.close(index);
                     }
                 });
-            }
+            };
+            syncServer(data,function (res) {
+                if(typeof callback === "function"){
+                    callback(res);
+                }
+            });
         }
     };
 
@@ -324,9 +330,9 @@ layui.define(function (exports) {
         },
 
         /**
-         * 获取启动流程动态表单字段
+         * 处理流程任务，获取启动流程动态表单字段
          */
-        startProcessinstance:function (id,callback) {
+        doProcess:function (id,callback) {
             WorkflowObj.getStartFromData(id,callback);
         },
 
@@ -364,8 +370,8 @@ layui.define(function (exports) {
          * @param data
          * @param callback
          */
-        process:function (data,callback) {
-            WorkflowObj.process(data,callback);
+        complete:function (data,callback) {
+            WorkflowObj.complete(data,callback);
         }
 
 
