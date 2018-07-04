@@ -1,65 +1,95 @@
 package com.example.myact.entity;
 
-public class User implements org.activiti.engine.identity.User {
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
+/**
+ * 用户
+ * @Author @MG
+ * @Date 2018/7/4 11:52
+ */
+@Entity
+@Table(name = "ACT_ID_USER")
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String id;
+    private String email;
     private String firstName;
     private String lastName;
-    private String email;
     private String password;
+    private List<Group> actIdGroups;
 
-    @Override
-    public String getId() {
-        return id;
+    public User() {
     }
 
-    @Override
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID_")
+    public String getId() {
+        return this.id;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
 
-    @Override
+    @Column(name = "FIRST_")
     public String getFirstName() {
         return firstName;
     }
 
-    @Override
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstName(String s) {
+        this.firstName = s;
     }
 
-    @Override
+    @Column(name = "LAST_")
+    public void setLastName(String s) {
+        this.lastName = s;
+    }
+
     public String getLastName() {
         return lastName;
     }
 
-    @Override
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Override
+    @Column(name = "EMAIL_")
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
-    @Override
     public void setEmail(String email) {
         this.email = email;
     }
 
-    @Override
+
+    @Column(name = "PWD_")
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
-    @Override
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @ManyToMany
+    @JoinTable(name = "ACT_ID_MEMBERSHIP", joinColumns = {@JoinColumn(name = "USER_ID_")}, inverseJoinColumns = {@JoinColumn(name = "GROUP_ID_")})
+    public List<Group> getActIdGroups() {
+        return this.actIdGroups;
+    }
+
+    public void setActIdGroups(List<Group> actIdGroups) {
+        this.actIdGroups = actIdGroups;
+    }
+
     @Override
-    public boolean isPictureSet() {
-        return false;
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", actIdGroups=" + actIdGroups +
+                '}';
     }
 }

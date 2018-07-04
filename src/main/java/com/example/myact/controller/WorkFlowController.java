@@ -6,12 +6,12 @@ import com.example.myact.common.util.Page;
 import com.example.myact.common.util.UserUtil;
 import com.example.myact.convert.LayuiTableData;
 import com.example.myact.convert.PageDataConvert;
+import com.example.myact.entity.User;
 import com.example.myact.service.WorkFlowService;
 import com.example.myact.service.WorkflowTraceService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
 import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.DateFormType;
@@ -431,7 +431,7 @@ public class WorkFlowController {
 
         Task task = this.taskService.createTaskQuery().taskId(taskId).singleResult();
         if(task.isSuspended()){
-            result.put("message","任务处于被挂起状态，无法办理！");
+            result.put("message","流程处于被挂起状态，任务无法办理！");
             result.put("status",false);
             return ResponseEntity.ok(result);
         }
