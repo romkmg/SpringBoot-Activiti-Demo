@@ -27,6 +27,7 @@
     <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="active">激活</a>
     {{# }else{ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="suspend">挂起</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="flow">跟踪</a>
     {{# } }}
 </script>
 
@@ -100,6 +101,8 @@
                     layer.msg(res.message);
                     currentTable.reload();
                 })
+            } else if (layEvent === 'flow'){//跟踪
+                m_workflow.flowDefinitionImage(data.executionId);
             }
         });
 

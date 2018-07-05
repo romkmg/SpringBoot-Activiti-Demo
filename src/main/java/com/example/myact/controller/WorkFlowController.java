@@ -6,12 +6,12 @@ import com.example.myact.common.util.Page;
 import com.example.myact.common.util.UserUtil;
 import com.example.myact.convert.LayuiTableData;
 import com.example.myact.convert.PageDataConvert;
-import com.example.myact.entity.User;
 import com.example.myact.service.WorkFlowService;
 import com.example.myact.service.WorkflowTraceService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
 import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.DateFormType;
@@ -201,6 +201,7 @@ public class WorkFlowController {
         for (Task task : q) {
             map = new HashMap<>();
             map.put("taskId",task.getId());
+            map.put("executionId",task.getExecutionId());
             map.put("processInstanceId",task.getProcessInstanceId());
             map.put("name", task.getName());
             map.put("description",task.getDescription());

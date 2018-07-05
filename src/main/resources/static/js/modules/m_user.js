@@ -24,7 +24,7 @@ layui.define(function (exports) {
                         }
                         view.goto('/index');
                     }else{
-                        layui.layer.msg('登录失败，'+result.msg, {icon: 5});
+                        layui.layer.msg('登录失败,用户名或密码不正确！');
                     }
                 },
                 error: function (xmlHttpReq, error, ex) {

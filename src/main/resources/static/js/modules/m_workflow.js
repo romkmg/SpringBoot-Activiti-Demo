@@ -67,13 +67,33 @@ layui.define(function (exports) {
         processDefinitionImage: function(id,callback) {
             var json = {
                 "title": "", //相册标题
-                "id": 123, //相册id
+                "id": id, //相册id
                 "start": 0, //初始显示的图片序号，默认0
                 "data": [   //相册包含的图片，数组格式
                     {
                         "alt": "流程图",
-                        "pid": 666, //图片id
+                        "pid": id, //图片id
                         "src": "/workflow/processDefinitionImage?processDefinitionId="+id, //原图地址
+                        "thumb": "" //缩略图地址
+                    }
+                ]
+            };
+            layer.photos({
+                photos: json
+                ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        },
+
+        flowDefinitionImage:function (id,callback) {
+            var json = {
+                "title": "", //相册标题
+                "id": id, //相册id
+                "start": 0, //初始显示的图片序号，默认0
+                "data": [   //相册包含的图片，数组格式
+                    {
+                        "alt": "流程跟踪图",
+                        "pid": id, //图片id
+                        "src": "/workflow/process/trace/auto/"+id, //原图地址
                         "thumb": "" //缩略图地址
                     }
                 ]
@@ -276,6 +296,14 @@ layui.define(function (exports) {
          */
         processDefinitionImage: function (data,callback) {
             WorkflowObj.processDefinitionImage(data,callback);
+        },
+        /**
+         * 跟踪流程图
+         * @param data
+         * @param callback
+         */
+        flowDefinitionImage:function (data,callback) {
+            WorkflowObj.flowDefinitionImage(data,callback);
         },
 
         /**

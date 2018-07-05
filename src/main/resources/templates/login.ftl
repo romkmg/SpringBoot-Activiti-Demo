@@ -68,7 +68,7 @@
         });
         form.on('submit(login)', function (data) {
             var formData = data.field;
-            console.log(formData);
+            console.debug(formData);
             user.userLogin(formData);//用户登录
             return false;
         });
