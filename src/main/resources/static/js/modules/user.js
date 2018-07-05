@@ -2,15 +2,11 @@
  * 用户模块
  */
 layui.define(function (exports) {
-    layui.use(["layer","element"], function () {
-
-    });
-
     var UserObj = {
         userLogin: function(data){
             var index = layer.load(2);
             $.ajax({
-                url:"/management/user/login",
+                url:"/login",
                 type:"POST",
                 data:data,
                 success:function(result){
@@ -33,17 +29,11 @@ layui.define(function (exports) {
                             view.goto(url);
                             localStorage.removeItem('url');
                         }else{
-
                             view.goto('/home');
                         }
 
                     }else{
-                        layui.layer.msg('登录失败，'+result.msg, {icon: 5});
-                        if('验证码错误'==result.msg){
-                            var time = new Date().getTime();
-                            $("#verifyImgDiv").empty().append('<img id="verifyImg" src="management/user/code?'+time+'" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(验证码)');
-
-                        }
+                        layui.layer.msg('登录失败,用户名或密码错误！');
                     }
                 },
                 error: function (xmlHttpReq, error, ex) {
@@ -55,14 +45,14 @@ layui.define(function (exports) {
         userLogout: function () {
             var syncServer = function (callback) {
                 $.ajax({
-                    url:"/management/user/logout",
+                    url:"/logout",
                     type:"GET",
                     cache:false,
                     success:function(result){
-                        if(result.status == true){
-                           callback(result,true);
+                        if(result === 'true'){
+                           callback(true);
                         }else{
-                            callback(result,false);
+                            callback(false);
                         }
                     },
                     error: function (xmlHttpReq, error, ex) {
@@ -72,7 +62,7 @@ layui.define(function (exports) {
                 });
             };
             layui.layer.confirm('您确定要退出!', {icon: 3, title: '退出确认',zIndex:9999999}, function (index) {
-                syncServer(function (res, status) {
+                syncServer(function (status) {
                     layui.layer.close(index);
                     if(status){
                         view.goto('/');

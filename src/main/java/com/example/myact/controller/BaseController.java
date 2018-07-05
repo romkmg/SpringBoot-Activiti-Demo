@@ -68,6 +68,7 @@ public class BaseController {
     }
 
     @RequestMapping("/logout")
+    @ResponseBody
     public String logout(HttpServletRequest request){
         UserUtil.removeUserSession(request.getSession());
         return "true";

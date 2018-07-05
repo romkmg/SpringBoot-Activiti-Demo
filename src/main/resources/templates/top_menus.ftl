@@ -26,11 +26,11 @@
         })
     });
     //注意：导航 依赖 element 模块，否则无法进行功能性操作
-    layui.use(['element', 'm_utils'], function () {
+    layui.use(['element', 'm_utils','m_user'], function () {
         var element = layui.element
-                , utils = layui.m_utils;
+                , utils = layui.m_utils,m_user = layui.m_user;
         $("#logout").click(function () {
-            user.userLogout();//安全退出
+            m_user.userLogout();//安全退出
         });
         $("#userDetils").click(function () {
             var url = '/management/user/detilsModal';

@@ -65,6 +65,7 @@ layui.define(function (exports) {
             }
         },
         processDefinitionImage: function(id,callback) {
+            var src = "/workflow/processDefinitionImage?processDefinitionId="+id+"&_="+new Date().getTime();
             var json = {
                 "title": "", //相册标题
                 "id": id, //相册id
@@ -73,7 +74,7 @@ layui.define(function (exports) {
                     {
                         "alt": "流程图",
                         "pid": id, //图片id
-                        "src": "/workflow/processDefinitionImage?processDefinitionId="+id, //原图地址
+                        "src": src, //原图地址
                         "thumb": "" //缩略图地址
                     }
                 ]
@@ -85,6 +86,7 @@ layui.define(function (exports) {
         },
 
         flowDefinitionImage:function (id,callback) {
+            var src = "/workflow/process/trace/auto/"+id+"?"+new Date().getTime();
             var json = {
                 "title": "", //相册标题
                 "id": id, //相册id
@@ -93,7 +95,7 @@ layui.define(function (exports) {
                     {
                         "alt": "流程跟踪图",
                         "pid": id, //图片id
-                        "src": "/workflow/process/trace/auto/"+id, //原图地址
+                        "src": src, //原图地址
                         "thumb": "" //缩略图地址
                     }
                 ]

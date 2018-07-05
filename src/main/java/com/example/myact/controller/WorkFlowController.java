@@ -226,7 +226,7 @@ public class WorkFlowController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "processDefinitionImage")
+    @RequestMapping(value = "/processDefinitionImage")
     public ResponseEntity<InputStreamResource> processDefinitionImage(String processDefinitionId) throws IOException {
         ProcessDefinition processDefinition = this.responsitorySercvie.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
         Deployment deployment = this.responsitorySercvie.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
@@ -241,7 +241,7 @@ public class WorkFlowController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         responseHeaders.setContentDispositionFormData("attachment", imageName);
-        return new ResponseEntity<InputStreamResource>(new InputStreamResource(inputStream), responseHeaders, HttpStatus.OK);
+        return new ResponseEntity<InputStreamResource>(new InputStreamResource(inputStream,"UTF-8"), responseHeaders, HttpStatus.OK);
     }
     /**
      * 输出跟踪流程信息
@@ -266,18 +266,17 @@ public class WorkFlowController {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(executionId).singleResult();
         BpmnModel bpmnModel = responsitorySercvie.getBpmnModel(processInstance.getProcessDefinitionId());
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(executionId);
-        // 不使用spring请使用下面的两行代码
-//    ProcessEngineImpl defaultProcessEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-//    Context.setProcessEngineConfiguration(defaultProcessEngine.getProcessEngineConfiguration());
-
-        // 使用spring注入引擎请使用下面的这行代码
-        processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-        Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngineConfiguration);
-
         ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-        InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", activeActivityIds);
-
-        // 输出资源内容到相应对象
+        InputStream imageStream = diagramGenerator.generateDiagram(
+                bpmnModel,
+                "png",
+                activeActivityIds,
+                new ArrayList<String>(),
+                "宋体",
+                "宋体",
+                "宋体",
+                null,
+                1.0);
         byte[] b = new byte[1024];
         int len;
         while ((len = imageStream.read(b, 0, 1024)) != -1) {
